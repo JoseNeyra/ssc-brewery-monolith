@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -27,6 +28,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
+//@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)              // Enables method annotation security @Secure()
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // Creates a Header Auth Filter using our custom RestHeaderAuth filter
@@ -56,12 +59,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests(authorize -> {
                     authorize
-                            .antMatchers("/h2-console/**").permitAll()  // Do not use in production
+                            .antMatchers("/h2-console/**")
+                                .permitAll()  // Do not use in production
+
                             .antMatchers("/","/webjars/**", "/login", "/resources/**")
-                            .permitAll()
-                            .antMatchers("/beers/find", "/beers*").permitAll()  // Is better to separate the paths instead of adding all the unsecure resources to one antMatcher
-                            .antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
-                            .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll();  // Allows us to use the mvc capabilities of mapping the params
+                                .permitAll()
+
+                            .mvcMatchers("/beers/find", "/beers/{beerId}")
+                                .hasAnyRole("ADMIN","USER", "CUSTOMER")  // Is better to separate the paths instead of adding all the unsecure resources to one antMatcher
+
+                            .antMatchers(HttpMethod.GET, "/api/v1/beer/**")
+                                .hasAnyRole("ADMIN","USER", "CUSTOMER")
+
+                            .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}")
+                                .hasAnyRole("ADMIN","USER", "CUSTOMER")
+
+//                            .mvcMatchers(HttpMethod.DELETE, "/api/v1/beer/**")
+//                                .hasRole("ADMIN")             // Replaced with @PreAuthorizedAnnotation()
+
+                            .mvcMatchers("/brewery/breweries")
+                                .hasAnyRole("ADMIN","CUSTOMER")
+
+                            .mvcMatchers(HttpMethod.GET, "/brewery/api/v1/breweries")
+                                .hasAnyRole("ADMIN","CUSTOMER")
+                    ;  // Allows us to use the mvc capabilities of mapping the params
                 })
                 .authorizeRequests()
                 .anyRequest().authenticated()

@@ -18,9 +18,9 @@ import java.util.*;
 @Component
 public class UserDataLoader implements CommandLineRunner {
 
-    private static final String ADMIN_ROLE = "admin";
-    private static final String USER_ROLE = "user";
-    private static final String SCOTT_ROLE = "scott";
+    private static final String ADMIN_ROLE = "ROLE_ADMIN";
+    private static final String USER_ROLE = "ROLE_USER";
+    private static final String CUSTOMER_ROLE = "ROLE_CUSTOMER";
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -41,7 +41,7 @@ public class UserDataLoader implements CommandLineRunner {
         Authority userAuth = Authority.builder().role(USER_ROLE).build();
         authorityRepository.save(userAuth);
 
-        Authority scottAuth = Authority.builder().role(SCOTT_ROLE).build();
+        Authority scottAuth = Authority.builder().role(CUSTOMER_ROLE).build();
         authorityRepository.save(scottAuth);
 
         User admin = User.builder()
