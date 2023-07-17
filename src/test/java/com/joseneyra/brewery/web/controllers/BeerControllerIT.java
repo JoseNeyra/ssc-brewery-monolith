@@ -25,11 +25,10 @@ public class BeerControllerIT extends BaseIT{
     @Nested
     class InitNewForm{
 
-        @ParameterizedTest(name = "#{index} with [{arguments}]")
-        @MethodSource("com.joseneyra.brewery.web.controllers.BeerControllerIT#getStreamAllUsers")
-        void initCreationFormAuth(String user, String pwd) throws Exception {
+        @Test
+        void initCreationFormAuth() throws Exception {
 
-            mockMvc.perform(get("/beers/new").with(httpBasic(user, pwd)))
+            mockMvc.perform(get("/beers/new").with(httpBasic("admin", "pass")))
                     .andExpect(status().isOk())
                     .andExpect(view().name("beers/createBeer"))
                     .andExpect(model().attributeExists("beer"));

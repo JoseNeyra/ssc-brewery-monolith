@@ -65,23 +65,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             .antMatchers("/","/webjars/**", "/login", "/resources/**")
                                 .permitAll()
 
-                            .mvcMatchers("/beers/find", "/beers/{beerId}")
-                                .hasAnyRole("ADMIN","USER", "CUSTOMER")  // Is better to separate the paths instead of adding all the unsecure resources to one antMatcher
-
-                            .antMatchers(HttpMethod.GET, "/api/v1/beer/**")
-                                .hasAnyRole("ADMIN","USER", "CUSTOMER")
-
-                            .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}")
-                                .hasAnyRole("ADMIN","USER", "CUSTOMER")
+//                            .antMatchers(HttpMethod.GET, "/api/v1/beer/**")   // Replaced by Annotation Configuration
+//                                .hasAnyRole("ADMIN","USER", "CUSTOMER")
+//
+//                            .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}")
+//                                .hasAnyRole("ADMIN","USER", "CUSTOMER")
 
 //                            .mvcMatchers(HttpMethod.DELETE, "/api/v1/beer/**")
 //                                .hasRole("ADMIN")             // Replaced with @PreAuthorizedAnnotation()
 
-                            .mvcMatchers("/brewery/breweries")
-                                .hasAnyRole("ADMIN","CUSTOMER")
-
-                            .mvcMatchers(HttpMethod.GET, "/brewery/api/v1/breweries")
-                                .hasAnyRole("ADMIN","CUSTOMER")
+//                            .mvcMatchers("/beers/find", "/beers/{beerId}")
+//                            .hasAnyRole("ADMIN","USER", "CUSTOMER")  // Is better to separate the paths instead of adding all the unsecure resources to one antMatcher
+//
+//                            .mvcMatchers("/brewery/breweries")
+//                                .hasAnyRole("ADMIN","CUSTOMER")
+//
+//                            .mvcMatchers(HttpMethod.GET, "/brewery/api/v1/breweries")
+//                                .hasAnyRole("ADMIN","CUSTOMER")
                     ;  // Allows us to use the mvc capabilities of mapping the params
                 })
                 .authorizeRequests()

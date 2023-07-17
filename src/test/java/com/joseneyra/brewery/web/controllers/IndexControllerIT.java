@@ -3,6 +3,7 @@ package com.joseneyra.brewery.web.controllers;
 import com.joseneyra.brewery.repositories.BeerInventoryRepository;
 import com.joseneyra.brewery.repositories.BeerRepository;
 import com.joseneyra.brewery.repositories.CustomerRepository;
+import com.joseneyra.brewery.services.BeerOrderService;
 import com.joseneyra.brewery.services.BeerService;
 import com.joseneyra.brewery.services.BreweryService;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,9 @@ public class IndexControllerIT extends BaseIT {
 
     @MockBean
     BeerService beerService;
+
+    @MockBean
+    BeerOrderService beerOrderService;
 
     @Test
     void testGetIndexSlash() throws Exception {

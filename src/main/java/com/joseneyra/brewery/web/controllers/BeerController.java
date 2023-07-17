@@ -30,11 +30,13 @@ public class BeerController {
     private final BeerInventoryRepository beerInventoryRepository;
 
 
+//    @PreAuthorize("hasAuthority('beer.read')")
     @RequestMapping("/find")
     public String findBeers(Model model) {
         model.addAttribute("beer", Beer.builder().build());
         return "beers/findBeers";
     }
+
 
     @GetMapping
     public String processFindFormReturnMany(Beer beer, BindingResult result, Model model) {
@@ -67,11 +69,13 @@ public class BeerController {
         return mav;
     }
 
+
     @GetMapping("/new")
     public String initCreationForm(Model model) {
         model.addAttribute("beer", Beer.builder().build());
         return "beers/createBeer";
     }
+
 
     @PostMapping("/new")
     public String processCreationForm(Beer beer) {
@@ -89,12 +93,14 @@ public class BeerController {
         return "redirect:/beers/" + savedBeer.getId();
     }
 
+
     @GetMapping("/{beerId}/edit")
     public String initUpdateBeerForm(@PathVariable UUID beerId, Model model) {
         if (beerRepository.findById(beerId).isPresent())
             model.addAttribute("beer", beerRepository.findById(beerId).get());
         return "beers/createOrUpdateBeer";
     }
+
 
     @PostMapping("/{beerId}/edit")
     public String processUpdateForm(@Valid Beer beer, BindingResult result) {

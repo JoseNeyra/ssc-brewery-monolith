@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,22 +30,23 @@ public class JpaUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepository.findByUsername(username)
+        // Converts our User Object to the Spring UserDetails Implementation, this is no longer needed because we have our own implementation now
+//        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+//                user.getEnabled(), user.getAccountNonExpired(), user.getCredentialsNonExpired(),
+//                user.getAccountNonLocked(), convertToSpringAuthorities(user.getAuthorities()));
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User name: " + username +  " not found"));
-
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
-                user.getEnabled(), user.getAccountNonExpired(), user.getCredentialsNonExpired(),
-                user.getAccountNonLocked(), convertToSpringAuthorities(user.getAuthorities()));
     }
 
-    private Collection<? extends GrantedAuthority> convertToSpringAuthorities(Set<Authority> authorities) {
-        if (authorities != null && authorities.size() > 0) {
-            return authorities.stream()
-                    .map(Authority::getRole)
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toSet());
-        } else {
-            return new HashSet<>();
-        }
-    }
+    // No longer needed
+//    private Collection<? extends GrantedAuthority> convertToSpringAuthorities(Set<Authority> authorities) {
+//        if (authorities != null && authorities.size() > 0) {
+//            return authorities.stream()
+//                    .map(Authority::getPermission)
+//                    .map(SimpleGrantedAuthority::new)
+//                    .collect(Collectors.toSet());
+//        } else {
+//            return new HashSet<>();
+//        }
+//    }
 }
