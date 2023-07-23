@@ -22,6 +22,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -32,30 +33,37 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    // Creates a Header Auth Filter using our custom RestHeaderAuth filter
-    public RestHeaderAuthFilter restHeaderAuthFilter(AuthenticationManager authenticationManager) {
-        RestHeaderAuthFilter filter = new RestHeaderAuthFilter(new AntPathRequestMatcher("/api/**"));
-        filter.setAuthenticationManager(authenticationManager);
-        return filter;
+    // Needed for use with Spring Data JPA SPeL (Spring Expression Language)
+    @Bean
+    public SecurityEvaluationContextExtension securityEvaluationContextExtension() {
+        return new SecurityEvaluationContextExtension();
     }
 
-    public RestUrlParamAuthFilter restUrlParamAuthFilter(AuthenticationManager authenticationManager) {
-        RestUrlParamAuthFilter filter = new RestUrlParamAuthFilter(new AntPathRequestMatcher("/api/**"));
-        filter.setAuthenticationManager(authenticationManager);
-        return filter;
-    }
+    // Creates a Header Auth Filter using our custom RestHeaderAuth filter
+    // No longer needed, these are old implementations
+//    public RestHeaderAuthFilter restHeaderAuthFilter(AuthenticationManager authenticationManager) {
+//        RestHeaderAuthFilter filter = new RestHeaderAuthFilter(new AntPathRequestMatcher("/api/**"));
+//        filter.setAuthenticationManager(authenticationManager);
+//        return filter;
+//    }
+//
+//    public RestUrlParamAuthFilter restUrlParamAuthFilter(AuthenticationManager authenticationManager) {
+//        RestUrlParamAuthFilter filter = new RestUrlParamAuthFilter(new AntPathRequestMatcher("/api/**"));
+//        filter.setAuthenticationManager(authenticationManager);
+//        return filter;
+//    }
 
 
     // Configures the accessibility of endpoints
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // Adds our custom filter (Not Recommended, only used in legacy applications)
-        http.addFilterBefore(restHeaderAuthFilter(authenticationManager()),
-                UsernamePasswordAuthenticationFilter.class)
-                        .csrf().disable();  // Turns off csrf (This is why this method is Not Recommended);
-
-        http.addFilterBefore(restUrlParamAuthFilter(authenticationManager()),
-                UsernamePasswordAuthenticationFilter.class);        // No need to disable the csrf because we already disable it in the first filter setup
+//        http.addFilterBefore(restHeaderAuthFilter(authenticationManager()),
+//                UsernamePasswordAuthenticationFilter.class)
+//                        .csrf().disable();  // Turns off csrf (This is why this method is Not Recommended);
+//
+//        http.addFilterBefore(restUrlParamAuthFilter(authenticationManager()),
+//                UsernamePasswordAuthenticationFilter.class);        // No need to disable the csrf because we already disable it in the first filter setup
 
         http.authorizeRequests(authorize -> {
                     authorize
@@ -88,7 +96,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().and()
-                .httpBasic();
+                .httpBasic()
+                .and().csrf().disable();
 
         // h2 console changes
         http.headers().frameOptions().sameOrigin();

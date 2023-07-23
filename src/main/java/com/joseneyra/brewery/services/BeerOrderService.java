@@ -2,6 +2,7 @@ package com.joseneyra.brewery.services;
 
 import com.joseneyra.brewery.web.model.BeerOrderDto;
 import com.joseneyra.brewery.web.model.BeerOrderPagedList;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;
@@ -14,4 +15,8 @@ public interface BeerOrderService {
     BeerOrderDto getOrderById(UUID customerId, UUID orderId);
 
     void pickupOrder(UUID customerId, UUID orderId);
+
+    BeerOrderPagedList listOrders(Pageable of);
+
+    BeerOrderDto getOrderById(UUID orderId);
 }

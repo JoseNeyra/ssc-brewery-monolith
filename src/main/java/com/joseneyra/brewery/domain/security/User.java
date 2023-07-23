@@ -1,5 +1,6 @@
 package com.joseneyra.brewery.domain.security;
 
+import com.joseneyra.brewery.domain.Customer;
 import lombok.*;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,11 +27,14 @@ public class User implements UserDetails, CredentialsContainer {
     private String password;
 
     @Singular // Project Lombok helper that allows a single Authority in the Builder and Lombok creates the set for us
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)    // EAGER will help improve performance
+    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)    // EAGER will help improve performance
     @JoinTable(name = "user_role",
             joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")})
     private Set<Role> roles;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Customer customer;
 
     @Transient      // Tells Hibernate that this property is calculated and not persisted
     public Set<GrantedAuthority> getAuthorities() {
@@ -58,7 +62,7 @@ public class User implements UserDetails, CredentialsContainer {
 
     @Override
     public boolean isEnabled() {
-        return this.isEnabled();
+        return this.enabled;
     }
 
     @Builder.Default

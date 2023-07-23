@@ -1,7 +1,8 @@
-package com.joseneyra.brewery.web.controllers;
+package com.joseneyra.brewery.web.controllers.api;
 
 import com.joseneyra.brewery.domain.Beer;
 import com.joseneyra.brewery.repositories.BeerRepository;
+import com.joseneyra.brewery.web.controllers.BaseIT;
 import com.joseneyra.brewery.web.model.BeerStyleEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-public class BeerRestControllerIT extends BaseIT{
+public class BeerRestControllerIT extends BaseIT {
 
     @Autowired
     BeerRepository beerRepository;

@@ -1,6 +1,9 @@
 package com.joseneyra.brewery.web.controllers.api;
 
 
+import com.joseneyra.brewery.security.perms.order.OrderCreatePermission;
+import com.joseneyra.brewery.security.perms.order.OrderPickUpPermission;
+import com.joseneyra.brewery.security.perms.order.OrderReadPermission;
 import com.joseneyra.brewery.services.BeerOrderService;
 import com.joseneyra.brewery.web.model.BeerOrderDto;
 import com.joseneyra.brewery.web.model.BeerOrderPagedList;
@@ -23,6 +26,7 @@ public class BeerOrderController {
 
     private final BeerOrderService beerOrderService;
 
+    @OrderReadPermission
     @GetMapping("orders")
     public BeerOrderPagedList listOrders(@PathVariable("customerId")UUID customerId,
                                          @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -38,17 +42,23 @@ public class BeerOrderController {
         return beerOrderService.listOrders(customerId, PageRequest.of(pageNumber, pageSize));
     }
 
+
+    @OrderCreatePermission
     @PostMapping("orders")
     @ResponseStatus(HttpStatus.CREATED)
     public BeerOrderDto placeOrder (@PathVariable("customerId") UUID customerId, @RequestBody BeerOrderDto beerOrderDto) {
         return beerOrderService.placeOrder(customerId, beerOrderDto);
     }
 
+
+    @OrderReadPermission
     @GetMapping("orders/{orderId}")
     public BeerOrderDto getOrder (@PathVariable("customerId") UUID customerId, @PathVariable("orderId") UUID orderId) {
         return beerOrderService.getOrderById(customerId, orderId);
     }
 
+
+    @OrderPickUpPermission
     @PutMapping("/orders/{orderId}/pickup")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void pickupOrder(@PathVariable("customerId") UUID customerId, @PathVariable("orderId") UUID orderId) {
